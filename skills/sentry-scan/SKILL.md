@@ -75,7 +75,8 @@ sentry-autofix 초기 설정을 시작합니다.
 
 - `baseBranch`는 `git symbolic-ref refs/remotes/origin/HEAD`로 자동 감지를 시도한다 (main 또는 master 등)
 - 각 항목에서 사용자가 빈 값을 입력하면 감지된 기본값을 사용한다
-- 설정 완료 후 `state.json`을 저장하고 "`.sentry-autofix/`를 .gitignore에 추가하세요"를 안내한다
+- 설정 완료 후 `state.json`을 저장한다
+- `.gitignore`에 `.sentry-autofix/`가 없으면 자동으로 추가한다 (`.gitignore` 파일이 없으면 생성)
 - 이후 실행에서는 초기화를 건너뛴다. 설정 변경은 `state.json`을 직접 수정한다.
 
 ### Step 2: Sentry 이슈 조회

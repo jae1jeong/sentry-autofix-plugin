@@ -306,11 +306,7 @@ Slack Incoming Webhook URL 생성: [api.slack.com/messaging/webhooks](https://ap
 vi .sentry-autofix/state.json
 ```
 
-`.sentry-autofix/`는 `.gitignore`에 추가하는 것을 권장합니다:
-
-```bash
-echo ".sentry-autofix/" >> .gitignore
-```
+`.sentry-autofix/`는 첫 실행 시 `.gitignore`에 자동 추가됩니다.
 
 ---
 
@@ -320,8 +316,8 @@ echo ".sentry-autofix/" >> .gitignore
 
 | 경로 | 설명 | git 추적 |
 |------|------|---------|
-| `.sentry-autofix/state.json` | 상태 파일 (처리 이력, 설정) | .gitignore 권장 |
-| `.sentry-autofix/logs/*.json` | 실행 로그 | .gitignore 권장 |
+| `.sentry-autofix/state.json` | 상태 파일 (처리 이력, 설정) | 자동 .gitignore |
+| `.sentry-autofix/logs/*.json` | 실행 로그 | 자동 .gitignore |
 | `auto/sentry-fix/*` 브랜치 | 수정 브랜치 (리모트에 push됨) | - |
 | Draft PR | GitHub에 생성 | - |
 
