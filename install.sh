@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 echo "=== Sentry Autofix Plugin Install ==="
 
 # 1. Prerequisites
-echo "[1/4] Checking prerequisites..."
+echo "[1/5] Checking prerequisites..."
 
 missing=""
 if ! command -v gh &> /dev/null; then
@@ -32,7 +32,7 @@ fi
 echo "OK"
 
 # 2. Install plugin
-echo "[2/4] Installing plugin..."
+echo "[2/5] Installing plugin..."
 
 if [ -d "$PLUGIN_DIR" ]; then
   echo "Existing installation found. Updating..."
@@ -48,7 +48,7 @@ cp "$SCRIPT_DIR/.mcp.json" "$PLUGIN_DIR/"
 echo "Installed to $PLUGIN_DIR"
 
 # 3. Enable plugin
-echo "[3/4] Enabling plugin..."
+echo "[3/5] Enabling plugin..."
 
 if [ -f "$SETTINGS" ] && command -v jq &> /dev/null; then
   tmp=$(mktemp)
@@ -59,8 +59,27 @@ else
   echo '  "enabledPlugins": { "sentry-autofix@local": true }'
 fi
 
-# 4. Done
-echo "[4/4] Done!"
+# 4. Register Sentry MCP server
+echo "[4/5] Registering Sentry MCP server..."
+
+SENTRY_MCP_URL="https://mcp.sentry.dev/mcp"
+
+if [ -f "$SETTINGS" ] && command -v jq &> /dev/null; then
+  # Check if sentry MCP is already registered
+  if jq -e '.mcpServers.sentry' "$SETTINGS" &> /dev/null; then
+    echo "Sentry MCP already registered"
+  else
+    tmp=$(mktemp)
+    jq '.mcpServers.sentry = {"type": "http", "url": "'"$SENTRY_MCP_URL"'"}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
+    echo "Sentry MCP registered: $SENTRY_MCP_URL"
+  fi
+else
+  echo "Add manually to $SETTINGS:"
+  echo '  "mcpServers": { "sentry": { "type": "http", "url": "'"$SENTRY_MCP_URL"'" } }'
+fi
+
+# 5. Done
+echo "[5/5] Done!"
 echo ""
 echo "Next steps:"
 echo "  1. Restart Claude Code"

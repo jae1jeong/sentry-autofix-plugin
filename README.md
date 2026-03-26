@@ -67,7 +67,13 @@ cp -r .claude-plugin skills .mcp.json ~/.claude/plugins/local/sentry-autofix/
 # 2. settings.json에 플러그인 활성화 추가
 # "enabledPlugins" 섹션에 아래 추가:
 #   "sentry-autofix@local": true
+
+# 3. settings.json에 Sentry MCP 서버 등록
+# "mcpServers" 섹션에 아래 추가:
+#   "sentry": { "type": "http", "url": "https://mcp.sentry.dev/mcp" }
 ```
+
+`install.sh`는 위 3단계를 자동으로 수행합니다 (플러그인 복사 + 활성화 + Sentry MCP 등록).
 
 ### 설치 후
 
