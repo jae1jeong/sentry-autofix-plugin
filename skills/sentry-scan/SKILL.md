@@ -121,7 +121,9 @@ Sentry 인증 방법 2가지:
 - Sentry 조직/프로젝트 slug는 URL에서 확인 가능: `https://sentry.io/organizations/{sentryOrg}/issues/?project={sentryProject}`
 - `baseBranch`는 `git symbolic-ref refs/remotes/origin/HEAD`로 자동 감지를 시도한다
 - 사용자가 브랜치명을 입력하면 `git rev-parse --verify <branch>`로 존재 여부를 확인한다
-- 존재하지 않는 브랜치를 입력하면 "해당 브랜치가 존재하지 않습니다. 다시 입력해주세요."를 출력하고 재입력을 요청한다
+- 정확히 일치하는 브랜치가 없으면 `git branch -a`에서 입력값을 포함하는 브랜치를 검색한다
+  - 유사 브랜치가 1개 이상 있으면: "`<입력값>` 브랜치가 없습니다. 혹시 이 브랜치를 의미하셨나요?" + 후보 목록을 보여주고 선택하게 한다
+  - 유사 브랜치도 없으면: "해당 브랜치가 존재하지 않습니다. 다시 입력해주세요."를 출력하고 재입력을 요청한다
 - 각 항목에서 사용자가 빈 값을 입력하면 감지된 기본값을 사용한다
 - 설정 완료 후 `state.json`을 저장한다
 - `.gitignore`에 `.sentry-autofix/`가 없으면 자동으로 추가한다 (`.gitignore` 파일이 없으면 생성)
