@@ -227,6 +227,12 @@ main (config.baseBranch)
 /schedule "0 9,21 * * *" /sentry-fix    # 매일 오전 9시 + 오후 9시
 ```
 
+**취소:**
+```
+/loop                           # 현재 등록된 loop 목록 확인
+/loop stop <id>                 # 특정 loop 취소
+```
+
 `config.scanInterval`은 연속 실행 방지 가드입니다. 설정 간격보다 짧게 연속 실행되면 자동 스킵합니다.
 
 ---
