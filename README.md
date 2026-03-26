@@ -100,11 +100,28 @@ claude
 /sentry-scan
 ```
 
-첫 실행 시 아래 정보를 입력해야 합니다:
-- **sentryOrg**: Sentry 조직 slug (URL에서 확인: `https://sentry.io/organizations/{이것}/`)
-- **sentryProject**: Sentry 프로젝트 slug (URL에서 확인: `https://sentry.io/organizations/org/issues/?project={이것}`)
+첫 실행 시 인터랙티브 초기 설정이 시작됩니다:
 
-입력 후 `.sentry-autofix/state.json`이 생성되고, `package.json`에서 test/lint/typecheck 명령이 자동 감지됩니다.
+```
+sentry-autofix 초기 설정을 시작합니다.
+
+감지된 프로젝트 유형: Android (Gradle)
+
+아래 설정을 확인해주세요:
+
+1. Sentry 조직 slug (sentryOrg):          ← 필수 입력
+2. Sentry 프로젝트 slug (sentryProject):   ← 필수 입력
+3. 기본 브랜치 (baseBranch) [감지: main]:  ← Enter로 기본값 사용
+4. 대상 환경 (environment) [기본: production]:
+5. 테스트 명령 (testCommand) [감지: ./gradlew test]:
+6. 린트 명령 (lintCommand) [감지: ./gradlew lint]:
+7. 타입체크 명령 (typeCheckCommand) [감지: 없음]:
+```
+
+- Sentry URL에서 slug 확인: `https://sentry.io/organizations/{sentryOrg}/issues/?project={sentryProject}`
+- 프로젝트 유형(Android/Node.js/Python/Go)과 기본 브랜치는 자동 감지
+- 설정 완료 후 `.sentry-autofix/state.json`이 생성됨
+- 이후 실행에서는 초기화를 건너뜀. 설정 변경은 `state.json`을 직접 수정
 
 ### 4. 특정 이슈 수정
 

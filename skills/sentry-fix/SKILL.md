@@ -24,7 +24,7 @@ The pipeline has 11 steps. Each step has a hard gate — if a gate fails, the pi
 
 ### Step 1: Load State
 
-`.sentry-autofix/state.json`을 읽는다. 파일이 없으면 `/sentry-scan`의 초기화 로직과 동일하게 기본값 생성 + 프로젝트 유형 자동 감지(build.gradle, package.json, pyproject.toml, go.mod 등)로 config를 채운다.
+`.sentry-autofix/state.json`을 읽는다. 파일이 없으면 `/sentry-scan`의 초기화 로직과 동일하게 인터랙티브 초기 설정을 진행한다 (프로젝트 유형 자동 감지 + sentryOrg/sentryProject/baseBranch 등을 사용자에게 확인).
 
 ### Step 2: Issue Selection
 
