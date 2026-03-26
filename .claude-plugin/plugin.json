@@ -1,0 +1,7 @@
+{
+  "name": "sentry-autofix",
+  "version": "0.1.0",
+  "description": "Sentry 오류를 TDD 방식으로 자동 수정하고 Draft PR을 생성하는 Claude Code 플러그인",
+  "skills": ["./skills/"],
+  "keywords": ["sentry", "autofix", "tdd", "draft-pr"]
+}
