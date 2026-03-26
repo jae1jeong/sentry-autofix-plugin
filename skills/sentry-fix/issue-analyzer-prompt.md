@@ -49,5 +49,5 @@ If the issue cannot be analyzed (no stacktrace, external dependency, infra issue
 
 - Do NOT modify any code. Analysis only.
 - Do NOT guess file paths. Verify with Glob.
-- If the stacktrace references node_modules or external packages, mark as external dependency.
+- If the stacktrace references external dependency directories (node_modules, build/, .gradle/, site-packages/, vendor/ etc.), mark as external dependency.
 - If the error is a timeout, connection error, or infrastructure-related, mark as infra issue.

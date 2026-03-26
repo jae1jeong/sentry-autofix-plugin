@@ -303,9 +303,9 @@ main (config.baseBranch)
 | 설정 | 기본값 | 설명 |
 |------|--------|------|
 | `scanInterval` | `"12h"` | 연속 실행 방지 간격 |
-| `testCommand` | 자동 감지 | `package.json`의 `scripts.test` |
-| `typeCheckCommand` | 자동 감지 | `scripts.typecheck` 또는 `npx tsc --noEmit` |
-| `lintCommand` | 자동 감지 | `scripts.lint` |
+| `testCommand` | 자동 감지 | 프로젝트 유형별 (위 지원 테이블 참고) |
+| `typeCheckCommand` | 자동 감지 | 프로젝트 유형별 (없으면 비워둠) |
+| `lintCommand` | 자동 감지 | 프로젝트 유형별 (위 지원 테이블 참고) |
 | `baseBranch` | `"main"` | PR 대상 + 브랜치 시작점 |
 | `sentryOrg` | (필수 입력) | Sentry 조직 slug |
 | `sentryProject` | (필수 입력) | Sentry 프로젝트 slug |
@@ -333,10 +333,16 @@ main (config.baseBranch)
 
 Slack Incoming Webhook URL 생성: [api.slack.com/messaging/webhooks](https://api.slack.com/messaging/webhooks)
 
-### 설정 직접 수정
+### 설정 변경
+
+```
+/sentry-config                  # 전체 설정 보기 + 수정
+/sentry-config baseBranch       # 특정 설정만 변경
+```
+
+또는 직접 수정:
 
 ```bash
-# 프로젝트 루트에서
 vi .sentry-autofix/state.json
 ```
 
