@@ -32,9 +32,18 @@ auto/sentry-fix/<issue-id> 브랜치에서 Draft PR 생성
 | Sentry 계정 | [sentry.io](https://sentry.io) 로그인 | - |
 
 대상 프로젝트 요구사항:
-- Node.js/TypeScript 프로젝트
-- `package.json`에 `test` 스크립트 존재
 - Sentry에 프로젝트가 연동되어 있고 이슈가 존재
+- 테스트를 실행할 수 있는 환경 (자동 감지 또는 수동 설정)
+
+지원 프로젝트 유형:
+
+| 유형 | 감지 기준 | 테스트 | 린트 |
+|------|----------|--------|------|
+| Android (Gradle) | `build.gradle(.kts)` | `./gradlew test` | `./gradlew lint` |
+| Node.js/TypeScript | `package.json` | `scripts.test` | `scripts.lint` |
+| Python | `pyproject.toml` / `setup.py` | `pytest` | `ruff` / `flake8` |
+| Go | `go.mod` | `go test ./...` | `golangci-lint run` |
+| 기타 | - | 수동 설정 | 수동 설정 |
 
 ---
 

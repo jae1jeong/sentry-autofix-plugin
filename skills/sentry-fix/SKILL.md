@@ -24,7 +24,7 @@ The pipeline has 11 steps. Each step has a hard gate — if a gate fails, the pi
 
 ### Step 1: Load State
 
-`.sentry-autofix/state.json`을 읽는다. 파일이 없으면 `/sentry-scan`의 초기화 로직과 동일하게 기본값 생성 + `package.json`에서 config 자동 감지한다.
+`.sentry-autofix/state.json`을 읽는다. 파일이 없으면 `/sentry-scan`의 초기화 로직과 동일하게 기본값 생성 + 프로젝트 유형 자동 감지(build.gradle, package.json, pyproject.toml, go.mod 등)로 config를 채운다.
 
 ### Step 2: Issue Selection
 
@@ -84,12 +84,21 @@ state에 기록: `skipped`, reason: skipReason 값.
 - 기존 테스트 파일이 있으면 (`existingTests`) 해당 파일을 Read하여 스타일과 네이밍 컨벤션을 따른다
 - 새 테스트 파일이 필요하면 `suggestedTestFile` 경로에 생성한다
 - 테스트는 **현재 버그를 재현해야 한다** — 수정 전에 실패하는 것이 목적이다
-- 테스트 이름에 Sentry 이슈 ID를 포함한다. 예: `it('should handle null profile [SENTRY-123]', ...)`
+- 테스트 이름/메서드명에 Sentry 이슈 ID를 포함한다
+  - JS/TS: `it('should handle null profile [SENTRY-123]', ...)`
+  - Kotlin/Java: `@Test fun handleNullProfile_SENTRY123()`
+  - Python: `def test_handle_null_profile_sentry_123():`
 
 ### Step 6: Reproduce Test — Verify Failure (TDD Red Confirm)
 
+프로젝트 유형에 맞는 방식으로 해당 테스트 파일만 실행한다:
+
 ```bash
-<config.testCommand> -- --testPathPattern="<test-file>" 2>&1
+# 프레임워크에 맞게 선택:
+# JS/TS:   <config.testCommand> -- --testPathPattern="<test-file>"
+# Android: ./gradlew test --tests "<test-class>"
+# Python:  pytest <test-file> -v
+# Go:      go test -run <TestName> ./path/to/package
 ```
 
 **Gate:** 테스트가 **실패해야 한다**.
@@ -123,9 +132,7 @@ state를 `fixed`로 갱신.
 순서대로 실행한다:
 
 1. **재현 테스트 통과 확인**
-```bash
-<config.testCommand> -- --testPathPattern="<test-file>" 2>&1
-```
+Step 6과 동일한 방식으로 해당 테스트 파일만 실행한다.
 Gate: 통과해야 함
 
 2. **전체 테스트 통과 확인**
