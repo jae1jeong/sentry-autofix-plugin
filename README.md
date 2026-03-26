@@ -106,28 +106,67 @@ claude
 /sentry-scan
 ```
 
-첫 실행 시 인터랙티브 초기 설정이 시작됩니다:
+첫 실행 시 인터랙티브 온보딩이 시작됩니다:
+
+**Phase 1: Sentry 연결 확인**
+
+Sentry MCP 연결을 테스트합니다. 연결 실패 시 두 가지 인증 방법을 안내합니다:
+
+| 방법 | 설명 |
+|------|------|
+| OAuth (권장) | Claude Code 재시작 시 브라우저 인증 자동 진행 |
+| Custom Integration 토큰 | Sentry 웹 → Settings → Developer Settings → Custom Integrations에서 토큰 발급 후 settings.json에 등록 |
+
+Custom Integration 토큰 설정 방법:
+1. Sentry 웹에서 **Settings → Developer Settings → Custom Integrations** 이동
+2. **Create New Integration** → **Internal Integration** 선택
+3. 권한: Project(Read), Issue & Event(Read), Organization(Read)
+4. 생성 후 토큰을 복사하여 `~/.claude/settings.json`에 추가:
+
+```json
+{
+  "mcpServers": {
+    "sentry": {
+      "type": "http",
+      "url": "https://mcp.sentry.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-token>"
+      }
+    }
+  }
+}
+```
+
+**Phase 2: 프로젝트 설정**
 
 ```
-sentry-autofix 초기 설정을 시작합니다.
-
 감지된 프로젝트 유형: Android (Gradle)
 
-아래 설정을 확인해주세요:
-
+== Sentry 설정 ==
 1. Sentry 조직 slug (sentryOrg):          ← 필수 입력
 2. Sentry 프로젝트 slug (sentryProject):   ← 필수 입력
-3. 기본 브랜치 (baseBranch) [감지: main]:  ← Enter로 기본값 사용
-4. 대상 환경 (environment) [기본: production]:
+3. 대상 환경 (environment) [기본: production]:
+
+== 브랜치 설정 ==
+현재 브랜치 목록:
+  * main
+    develop
+    feature/checkout
+    release/1.2.0
+
+4. 기본 브랜치 (baseBranch):              ← 수정의 시작점 + PR 대상
+   [감지: main]
+
+== 빌드/테스트 설정 ==
 5. 테스트 명령 (testCommand) [감지: ./gradlew test]:
 6. 린트 명령 (lintCommand) [감지: ./gradlew lint]:
 7. 타입체크 명령 (typeCheckCommand) [감지: 없음]:
 ```
 
 - Sentry URL에서 slug 확인: `https://sentry.io/organizations/{sentryOrg}/issues/?project={sentryProject}`
-- 프로젝트 유형(Android/Node.js/Python/Go)과 기본 브랜치는 자동 감지
-- 설정 완료 후 `.sentry-autofix/state.json`이 생성됨
-- 이후 실행에서는 초기화를 건너뜀. 설정 변경은 `state.json`을 직접 수정
+- 브랜치 목록은 `git branch -a`로 로컬+리모트 전부 표시
+- 설정 완료 후 `.sentry-autofix/state.json` 생성 + `.gitignore` 자동 추가
+- 이후 실행에서는 온보딩을 건너뜀. 설정 변경은 `state.json`을 직접 수정
 
 ### 4. 특정 이슈 수정
 
