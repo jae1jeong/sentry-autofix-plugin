@@ -148,14 +148,9 @@ Custom Integration 토큰 설정 방법:
 3. 대상 환경 (environment) [기본: production]:
 
 == 브랜치 설정 ==
-현재 브랜치 목록:
-  * main
-    develop
-    feature/checkout
-    release/1.2.0
-
 4. 기본 브랜치 (baseBranch):              ← 수정의 시작점 + PR 대상
    [감지: main]
+   (입력한 브랜치가 존재하는지 git에서 자동 검증)
 
 == 빌드/테스트 설정 ==
 5. 테스트 명령 (testCommand) [감지: ./gradlew test]:
@@ -164,7 +159,7 @@ Custom Integration 토큰 설정 방법:
 ```
 
 - Sentry URL에서 slug 확인: `https://sentry.io/organizations/{sentryOrg}/issues/?project={sentryProject}`
-- 브랜치 목록은 `git branch -a`로 로컬+리모트 전부 표시
+- 브랜치는 사용자가 입력하면 `git rev-parse --verify`로 존재 여부를 검증, 없으면 재입력 요청
 - 설정 완료 후 `.sentry-autofix/state.json` 생성 + `.gitignore` 자동 추가
 - 이후 실행에서는 온보딩을 건너뜀. 설정 변경은 `state.json`을 직접 수정
 
