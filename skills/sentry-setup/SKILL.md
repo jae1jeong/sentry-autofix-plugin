@@ -35,16 +35,17 @@ Sentry MCP 도구를 호출하여 연결을 테스트한다.
 → Step 3으로 진행.
 
 **연결 실패 시:**
+
+MCP 서버가 등록되어 있는지 먼저 확인한다. 등록 안 되어 있으면 Bash로 직접 등록한다:
+```bash
+claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
 ```
-❌ Sentry에 연결할 수 없습니다.
 
-인증 방법:
-  1. OAuth (권장): Claude Code를 재시작하면 브라우저 인증이 자동으로 진행됩니다.
-  2. 토큰: Sentry → Settings → Developer Settings → Custom Integrations에서
-     Internal Integration 생성 후 토큰을 settings.json에 등록하세요.
-     자세한 방법은 README의 트러블슈팅을 참고하세요.
-
-연결 후 다시 /sentry-setup을 실행하세요.
+등록 후 안내한다:
+```
+Sentry MCP 서버를 등록했습니다.
+Claude Code를 재시작하면 첫 Sentry 도구 호출 시 브라우저에서 OAuth 인증이 진행됩니다.
+재시작 후 다시 /sentry-setup을 실행하세요.
 ```
 → 여기서 중단한다.
 

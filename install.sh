@@ -62,20 +62,17 @@ fi
 # 4. Register Sentry MCP server
 echo "[4/5] Registering Sentry MCP server..."
 
-SENTRY_MCP_URL="https://mcp.sentry.dev/mcp"
-
-if [ -f "$SETTINGS" ] && command -v jq &> /dev/null; then
-  # Check if sentry MCP is already registered
-  if jq -e '.mcpServers.sentry' "$SETTINGS" &> /dev/null; then
+if command -v claude &> /dev/null; then
+  # Check if already registered
+  if claude mcp list 2>/dev/null | grep -q "sentry"; then
     echo "Sentry MCP already registered"
   else
-    tmp=$(mktemp)
-    jq '.mcpServers.sentry = {"type": "http", "url": "'"$SENTRY_MCP_URL"'"}' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
-    echo "Sentry MCP registered: $SENTRY_MCP_URL"
+    claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
+    echo "Sentry MCP registered (OAuth — 첫 사용 시 브라우저 인증)"
   fi
 else
-  echo "Add manually to $SETTINGS:"
-  echo '  "mcpServers": { "sentry": { "type": "http", "url": "'"$SENTRY_MCP_URL"'" } }'
+  echo "claude CLI not found. 수동으로 실행하세요:"
+  echo "  claude mcp add --transport http sentry https://mcp.sentry.dev/mcp"
 fi
 
 # 5. Done

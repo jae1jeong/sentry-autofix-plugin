@@ -376,11 +376,15 @@ fix: handle null user in checkout flow [SENTRY-123]
 
 ### Sentry MCP 연결 안 됨
 
-```
-/mcp                    # MCP 서버 상태 확인
-```
+```bash
+# MCP 서버 등록 확인
+claude mcp list | grep sentry
 
-Sentry 서버가 목록에 없으면 플러그인이 제대로 설치되지 않은 것입니다. `~/.claude/plugins/local/sentry-autofix/.mcp.json` 파일 존재 여부를 확인하세요.
+# 등록 안 되어 있으면 수동 등록
+claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
+
+# Claude Code 재시작 후 첫 Sentry 도구 호출 시 OAuth 브라우저 인증 진행
+```
 
 ### 스킬이 안 보임
 
