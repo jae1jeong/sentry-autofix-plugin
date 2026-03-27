@@ -1,6 +1,23 @@
 # sentry-autofix
 
-Sentry 오류를 TDD 방식으로 자동 수정하고 Draft PR을 생성하는 Claude Code 플러그인.
+**컴퓨터만 켜두면, 주말에도 Sentry 오류를 찾아서 고치고 PR을 올려놓는 Claude Code 플러그인.**
+
+```
+금요일 퇴근 → /loop 12h /sentry-fix 설정 → 주말 동안 자동 실행
+월요일 출근 → GitHub에 Draft PR이 올라와 있음 → 리뷰만 하면 끝
+```
+
+설치 3분, 설정 2분. 나머지는 AI가 알아서 합니다.
+
+---
+
+## 왜 sentry-autofix인가?
+
+- Sentry에 쌓이는 오류를 자동으로 감지하고 우선순위를 매깁니다
+- 스택트레이스를 분석해서 원인 코드를 찾습니다
+- 재현 테스트를 먼저 작성하고, 실패를 확인한 뒤에만 코드를 수정합니다 (TDD)
+- 전체 테스트 + 타입체크 + 린트를 통과해야만 PR을 생성합니다
+- Draft PR로만 올리므로 사람이 리뷰하기 전까지 merge되지 않습니다
 
 ## 동작 원리
 
@@ -8,6 +25,8 @@ Sentry 오류를 TDD 방식으로 자동 수정하고 Draft PR을 생성하는 C
 Sentry MCP에서 이슈 조회
     ↓
 스택트레이스 기반 코드 원인 분석 (서브에이전트)
+    ↓
+Sentry 이벤트 상세 조회 (request context, breadcrumbs)
     ↓
 재현 테스트 작성 → 실패 확인 (TDD Red)
     ↓
@@ -87,83 +106,29 @@ claude # 다시 시작
 
 ---
 
-## 빠른 시작
-
-### 1. 프로젝트 디렉토리에서 Claude Code 실행
+## 빠른 시작 (5분)
 
 ```bash
-cd /path/to/your-project   # Sentry 연동된 프로젝트
+# 1. 설치 (1분)
+git clone https://github.com/<owner>/sentry-autofix.git
+cd sentry-autofix && ./install.sh
+
+# 2. Claude Code 재시작 후, 프로젝트에서 실행
+cd /path/to/your-project
 claude
-```
 
-### 2. Sentry 인증 (최초 1회)
-
-첫 실행 시 Sentry MCP가 OAuth 인증을 요청합니다. 브라우저가 자동으로 열리고 Sentry 로그인 후 권한을 승인하면 됩니다.
-
-### 3. 스캔 먼저 해보기
-
-```
+# 3. 첫 스캔 (Sentry 연결 + 프로젝트 설정이 자동으로 진행됨)
 /sentry-scan
 ```
 
-첫 실행 시 인터랙티브 온보딩이 시작됩니다:
+첫 실행 시 자동 온보딩:
+1. **Sentry 연결** — OAuth 브라우저 인증 (자동) 또는 토큰 설정 안내
+2. **필수 설정 2개** — Sentry 조직 slug + 프로젝트 slug 입력
+3. **나머지 자동 감지** — 브랜치, 테스트 명령, 린트 명령은 프로젝트에서 자동 감지 (Enter로 넘어가면 됨)
 
-**Phase 1: Sentry 연결 확인**
+설정이 끝나면 바로 스캔 결과가 나옵니다.
 
-Sentry MCP 연결을 테스트합니다. 연결 실패 시 두 가지 인증 방법을 안내합니다:
-
-| 방법 | 설명 |
-|------|------|
-| OAuth (권장) | Claude Code 재시작 시 브라우저 인증 자동 진행 |
-| Custom Integration 토큰 | Sentry 웹 → Settings → Developer Settings → Custom Integrations에서 토큰 발급 후 settings.json에 등록 |
-
-Custom Integration 토큰 설정 방법:
-1. Sentry 웹에서 **Settings → Developer Settings → Custom Integrations** 이동
-2. **Create New Integration** → **Internal Integration** 선택
-3. 권한: Project(Read), Issue & Event(Read), Organization(Read)
-4. 생성 후 토큰을 복사하여 `~/.claude/settings.json`에 추가:
-
-```json
-{
-  "mcpServers": {
-    "sentry": {
-      "type": "http",
-      "url": "https://mcp.sentry.dev/mcp",
-      "headers": {
-        "Authorization": "Bearer <your-token>"
-      }
-    }
-  }
-}
-```
-
-**Phase 2: 프로젝트 설정**
-
-```
-감지된 프로젝트 유형: Android (Gradle)
-
-== Sentry 설정 ==
-1. Sentry 조직 slug (sentryOrg):          ← 필수 입력
-2. Sentry 프로젝트 slug (sentryProject):   ← 필수 입력
-3. 대상 환경 (environment) [기본: production]:
-
-== 브랜치 설정 ==
-4. 기본 브랜치 (baseBranch):              ← 수정의 시작점 + PR 대상
-   [감지: main]
-   (입력한 브랜치가 존재하는지 git에서 자동 검증)
-
-== 빌드/테스트 설정 ==
-5. 테스트 명령 (testCommand) [감지: ./gradlew test]:
-6. 린트 명령 (lintCommand) [감지: ./gradlew lint]:
-7. 타입체크 명령 (typeCheckCommand) [감지: 없음]:
-```
-
-- Sentry URL에서 slug 확인: `https://sentry.io/organizations/{sentryOrg}/issues/?project={sentryProject}`
-- 브랜치는 사용자가 입력하면 `git rev-parse --verify`로 존재 여부를 검증, 없으면 재입력 요청
-- 설정 완료 후 `.sentry-autofix/state.json` 생성 + `.gitignore` 자동 추가
-- 이후 실행에서는 온보딩을 건너뜀. 설정 변경은 `state.json`을 직접 수정
-
-### 4. 특정 이슈 수정
+### 특정 이슈 수정
 
 ```
 /sentry-fix SENTRY-12345
@@ -178,12 +143,19 @@ Custom Integration 토큰 설정 방법:
 6. `auto/sentry-fix/SENTRY-12345` 브랜치 생성
 7. Draft PR 생성 → `main` 브랜치로 복귀
 
-### 5. 자동 모드 (선택)
+### 자동 모드 — 컴퓨터만 켜두면 알아서 합니다
 
 ```
-/sentry-fix                     # 가장 우선순위 높은 이슈 자동 선택
 /loop 12h /sentry-fix           # 하루 2회 자동 실행
 ```
+
+이 한 줄이면 끝입니다. Claude Code 세션이 열려있는 동안:
+- 12시간마다 Sentry에서 새 오류를 확인합니다
+- 수정 가능한 이슈를 골라서 재현 테스트 + 수정 + 검증을 수행합니다
+- 통과하면 Draft PR을 올려놓습니다
+- 실패하면 기록만 남기고 다음 이슈로 넘어갑니다
+
+**금요일 퇴근 전에 설정해두면, 월요일에 PR이 올라와 있습니다.**
 
 ---
 
@@ -420,12 +392,30 @@ cat ~/.claude/settings.json | grep sentry
 
 없으면 수동 추가 후 Claude Code 재시작.
 
-### OAuth 브라우저가 안 열림
+### OAuth 인증이 안 되는 경우 (Custom Integration 토큰)
 
-세션 내에서 직접 시도:
+OAuth가 동작하지 않으면 토큰을 수동 설정할 수 있습니다:
+
+1. Sentry 웹 → **Settings → Developer Settings → Custom Integrations**
+2. **Create New Integration** → **Internal Integration**
+3. 권한: Project(Read), Issue & Event(Read), Organization(Read)
+4. 생성 후 토큰을 복사하여 `~/.claude/settings.json`에 추가:
+
+```json
+{
+  "mcpServers": {
+    "sentry": {
+      "type": "http",
+      "url": "https://mcp.sentry.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-token>"
+      }
+    }
+  }
+}
 ```
-! open https://mcp.sentry.dev/mcp
-```
+
+5. Claude Code 재시작
 
 ### "워킹 트리에 미커밋 변경이 있습니다"
 
