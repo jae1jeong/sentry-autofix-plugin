@@ -143,6 +143,8 @@ While the Claude Code session is open:
 
 > **Note:** `/loop` only works while the session is open. It disappears when you close the session and auto-expires after 3 days.
 > For session-independent scheduling, use Desktop schedule (`/schedule`) or Cloud schedule.
+>
+> **Permission mode:** For fully unattended auto mode, Claude Code needs to run without permission prompts. Otherwise it will pause and wait for approval on every file edit, git push, and PR creation. Check your Claude Code permission settings before setting up `/loop`.
 
 **Set it up Friday before you leave. PRs will be waiting Monday morning.**
 
