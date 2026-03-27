@@ -68,15 +68,29 @@ auto/sentry-fix/<issue-id> 브랜치에서 Draft PR 생성
 
 ## 설치
 
-### 방법 1: git clone (추천)
+### 방법 1: Plugin 명령어 (추천)
+
+```
+/plugin marketplace add jae1jeong/sentry-autofix-plugin
+/plugin install sentry-autofix@sentry-autofix
+```
+
+Sentry MCP 등록 후 재시작:
+```bash
+claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
+```
+
+### 방법 2: git clone + install script
 
 ```bash
-git clone https://github.com/<owner>/sentry-autofix.git
-cd sentry-autofix
+git clone https://github.com/jae1jeong/sentry-autofix-plugin.git
+cd sentry-autofix-plugin
 ./install.sh
 ```
 
-### 방법 2: 수동 설치
+Claude Code 재시작.
+
+### 방법 3: 수동 설치
 
 ```bash
 # 1. 플러그인 디렉토리에 복사
@@ -109,9 +123,10 @@ claude # 다시 시작
 ## 빠른 시작 (5분)
 
 ```bash
-# 1. 설치 (1분)
-git clone https://github.com/<owner>/sentry-autofix.git
-cd sentry-autofix && ./install.sh
+# 1. 설치 (택 1)
+/plugin marketplace add jae1jeong/sentry-autofix-plugin
+/plugin install sentry-autofix@sentry-autofix
+# 또는: git clone https://github.com/jae1jeong/sentry-autofix-plugin.git && cd sentry-autofix-plugin && ./install.sh
 
 # 2. Claude Code 재시작 후, 프로젝트에서 실행
 cd /path/to/your-project

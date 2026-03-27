@@ -68,13 +68,27 @@ All fixes branch from `config.baseBranch` (default: `main`) and open a Draft PR 
 
 ## Installation
 
+### Option 1: Plugin command (recommended)
+
+```
+/plugin marketplace add jae1jeong/sentry-autofix-plugin
+/plugin install sentry-autofix@sentry-autofix
+```
+
+Then register Sentry MCP and restart:
 ```bash
-git clone https://github.com/<owner>/sentry-autofix.git
-cd sentry-autofix
+claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
+```
+
+### Option 2: Clone + install script
+
+```bash
+git clone https://github.com/jae1jeong/sentry-autofix-plugin.git
+cd sentry-autofix-plugin
 ./install.sh
 ```
 
-Then restart Claude Code.
+Restart Claude Code.
 
 <details>
 <summary>Manual installation</summary>
@@ -98,9 +112,10 @@ claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
 ## Quick Start (5 min)
 
 ```bash
-# 1. Install
-git clone https://github.com/<owner>/sentry-autofix.git
-cd sentry-autofix && ./install.sh
+# 1. Install (choose one)
+/plugin marketplace add jae1jeong/sentry-autofix-plugin
+/plugin install sentry-autofix@sentry-autofix
+# or: git clone https://github.com/jae1jeong/sentry-autofix-plugin.git && cd sentry-autofix-plugin && ./install.sh
 
 # 2. Restart Claude Code, then open your project
 cd /path/to/your-project
