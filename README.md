@@ -371,6 +371,19 @@ sentry-autofix/
 
 ---
 
+## Disclaimer
+
+> **This plugin is an AI assistant, not a replacement for human code review.**
+>
+> - **Always review Draft PRs before merging.** AI-generated fixes may introduce subtle bugs, miss edge cases, or misunderstand business logic.
+> - **The reproduction test may not fully cover the original bug.** Verify that the fix actually addresses the root cause, not just the symptom.
+> - **AI can make mistakes.** Wrong analysis, incorrect fixes, and flawed tests are all possible. Treat every auto-generated PR as if a junior developer wrote it — review thoroughly.
+> - **You are responsible for what gets merged.** Draft PRs exist specifically so nothing ships without your approval.
+>
+> Use with caution. Trust but verify.
+
+---
+
 ## Credits
 
 TDD and verification skills (`sentry-tdd`, `sentry-verify`) are lightweight adaptations of `test-driven-development` and `verification-before-completion` from the [superpowers](https://github.com/obra/superpowers) plugin, tailored for Sentry bug fixing.
