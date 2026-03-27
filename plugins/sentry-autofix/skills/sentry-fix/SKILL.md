@@ -73,6 +73,7 @@ Agent:
     Target issue: <선택된 이슈 ID>
     Sentry org: <config.sentryOrg>
     Sentry project: <config.sentryProject>
+    Test convention: <config.testConvention이 있으면 JSON으로 전달, 없으면 "not configured">
 ```
 
 서브에이전트의 프롬프트는 이 스킬과 같은 디렉토리의 `issue-analyzer-prompt.md`를 Read하여 사용한다.
@@ -104,9 +105,16 @@ Sentry MCP 도구를 사용하여 이슈 ID로 최신 이벤트를 조회한다.
 
 분석 결과의 `hypothesis`, `files`, `testStrategy`, `suggestedTestFile`과 **Step 4.5에서 조회한 이벤트 상세 데이터**를 바탕으로 재현 테스트를 작성한다.
 
+**테스트 컨벤션 참조 (토큰 절약):**
+
+`config.testConvention`이 있으면 이를 우선 참조한다:
+- `exampleSnippet`이 있으면 → 이 스니펫의 import, assertion 스타일, 구조를 그대로 따라 테스트를 작성한다. 기존 테스트 파일을 Read할 필요 없음.
+- `exampleSnippet`이 null이고 `framework`만 있으면 → 해당 프레임워크의 기본 패턴으로 작성한다.
+- `testConvention` 자체가 없으면 (기존 프로젝트 호환) → 기존 테스트 파일을 Read하여 스타일을 파악한 뒤, 감지 결과를 `config.testConvention`에 저장한다 (lazy detection). 다음 루프부터 캐시를 사용한다.
+
 **규칙:**
 - **기존 테스트 파일을 절대 수정하지 않는다.** 기존 테스트의 코드, assertion, import, 설정을 변경하거나 삭제하지 않는다.
-- 기존 테스트 파일이 있으면 (`existingTests`) Read하여 스타일과 네이밍 컨벤션을 **참고만** 한다
+- `testConvention.exampleSnippet`이 있으면 기존 테스트 파일을 Read하지 않는다 — 스니펫이 컨벤션의 출처다
 - 재현 테스트는 **새 테스트 파일에 작성**하거나, 기존 파일에 **새 테스트 케이스만 추가**한다 (기존 케이스 수정 금지)
 - 새 테스트 파일이 필요하면 `suggestedTestFile` 경로에 생성한다
 - 테스트는 **현재 버그를 재현해야 한다** — 수정 전에 실패하는 것이 목적이다

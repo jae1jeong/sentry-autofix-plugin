@@ -329,6 +329,7 @@ main (config.baseBranch)
 | `sentryOrg` | (필수 입력) | Sentry 조직 slug |
 | `sentryProject` | (필수 입력) | Sentry 프로젝트 slug |
 | `environment` | `"production"` | 이슈 필터링 환경 |
+| `testConvention` | 자동 감지 | 테스트 프레임워크, mock 라이브러리, assertion 스타일, 예시 스니펫 (setup 시 캐싱하여 루프당 토큰 절약) |
 
 ### Slack 알림 (선택)
 

@@ -16,7 +16,7 @@ Then search the repository for related files using Grep and Glob.
 1. **Read the stacktrace** — identify the error class, function, file, and line
 2. **Find the source file** — Glob for the file path from the stacktrace, verify it exists
 3. **Read the relevant code** — Read the file around the error location (±30 lines)
-4. **Check existing tests** — Glob for test files related to the source file
+4. **Check existing tests** — If `testConvention` is provided (see Input), skip reading existing test files for convention discovery. Only Glob for test files to populate `existingTests` and `suggestedTestFile` fields.
 5. **Form a hypothesis** — what is the root cause and how can it be reproduced?
 
 ## Output Format

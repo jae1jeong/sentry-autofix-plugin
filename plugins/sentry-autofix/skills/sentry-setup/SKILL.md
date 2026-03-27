@@ -67,6 +67,48 @@ Sentry MCP 도구를 호출하여 연결을 테스트한다.
 | `go.mod` | Go | `go test ./...` | `golangci-lint run` |
 | 해당 없음 | 기타 | 사용자 입력 | 사용자 입력 |
 
+### Step 3.5: 테스트 컨벤션 감지
+
+프로젝트의 테스트 라이브러리와 코딩 스타일을 감지하여 `testConvention`에 저장한다. 이 정보는 `/sentry-fix` 루프에서 매번 기존 테스트를 읽지 않고도 올바른 스타일로 재현 테스트를 작성할 수 있게 한다.
+
+**1. 프레임워크 감지**
+
+프로젝트 유형별로 의존성 파일에서 테스트 프레임워크를 감지한다:
+
+| 유형 | 감지 파일 | 감지 대상 |
+|---|---|---|
+| Android | `build.gradle(.kts)` | JUnit4(`junit:junit`), JUnit5(`org.junit.jupiter`), Kotest(`io.kotest`) |
+| Android (mock) | `build.gradle(.kts)` | Mockito(`org.mockito`), MockK(`io.mockk`) |
+| Node.js | `package.json` devDependencies | jest, vitest, mocha, @testing-library/* |
+| Python | `pyproject.toml`, `requirements*.txt` | pytest, unittest(내장), pytest-mock |
+| Go | — | testing(내장), testify(`github.com/stretchr/testify`) |
+
+감지 결과를 `testConvention.framework`, `testConvention.mockLibrary`에 저장한다.
+
+**2. 스니펫 추출**
+
+Glob으로 프로젝트의 테스트 파일을 탐색한다:
+- Android: `**/src/test/**/*Test.kt`, `**/src/test/**/*Test.java`
+- Node.js: `**/*.test.{ts,js,tsx,jsx}`, `**/*.spec.{ts,js,tsx,jsx}`, `**/__tests__/**`
+- Python: `**/test_*.py`, `**/*_test.py`
+- Go: `**/*_test.go`
+
+찾은 테스트 파일 중 **가장 최근 수정된 1개**를 Read한다 (50줄 이하). 이 파일에서:
+- import 문
+- 테스트 함수/메서드 1개 전체 (setup ~ assertion)
+- assertion 스타일 (`assertThat`, `assertEquals`, `expect`, `assert` 등)
+
+을 추출하여 `testConvention.exampleSnippet`에 저장한다.
+
+`testConvention.assertionStyle`은 스니펫에서 가장 많이 사용된 assertion 패턴으로 설정한다.
+
+**3. 테스트 파일이 0개인 경우**
+
+테스트 파일을 찾을 수 없으면:
+- `testConvention.framework`와 `testConvention.mockLibrary`는 의존성 파일 기반으로 설정
+- `testConvention.exampleSnippet`은 `null`로 설정
+- `testConvention.assertionStyle`은 프레임워크 기본값 사용 (JUnit5: `assertEquals`, pytest: `assert`, Jest: `expect` 등)
+
 ### Step 4: 필수 설정 입력
 
 ```

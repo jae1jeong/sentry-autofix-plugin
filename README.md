@@ -234,6 +234,7 @@ While the Claude Code session is open:
 | `sentryOrg` | (required) | Sentry organization slug |
 | `sentryProject` | (required) | Sentry project slug |
 | `environment` | `"production"` | Issue filter environment |
+| `testConvention` | auto-detect | Test framework, mock library, assertion style, and example snippet (cached at setup to save tokens per loop) |
 
 ### Slack Notifications (optional)
 
