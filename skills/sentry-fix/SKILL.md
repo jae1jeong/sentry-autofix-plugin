@@ -7,9 +7,8 @@ description: Use when fixing a Sentry error with TDD, auto-fixing production bug
 
 Sentry 이슈를 TDD 방식으로 자동 수정하고 Draft PR을 생성하는 파이프라인 스킬.
 
-**REQUIRED BACKGROUND:** superpowers:test-driven-development — 재현 테스트 선행 원칙
-**REQUIRED BACKGROUND:** superpowers:verification-before-completion — PR 생성 전 증거 기반 검증
-**Related:** superpowers:systematic-debugging — 근본 원인 분석이 필요할 때
+**REQUIRED BACKGROUND:** sentry-autofix:sentry-tdd — 재현 테스트 선행 원칙 (TDD Red-Green)
+**REQUIRED BACKGROUND:** sentry-autofix:sentry-verify — PR 생성 전 증거 기반 검증
 
 ## Usage
 
