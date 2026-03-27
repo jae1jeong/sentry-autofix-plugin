@@ -117,16 +117,16 @@ cd sentry-autofix && ./install.sh
 cd /path/to/your-project
 claude
 
-# 3. 첫 스캔 (Sentry 연결 + 프로젝트 설정이 자동으로 진행됨)
-/sentry-scan
+# 3. 초기 설정 (최초 1회, 2분)
+/sentry-setup
 ```
 
-첫 실행 시 자동 온보딩:
-1. **Sentry 연결** — OAuth 브라우저 인증 (자동) 또는 토큰 설정 안내
-2. **필수 설정 2개** — Sentry 조직 slug + 프로젝트 slug 입력
-3. **나머지 자동 감지** — 브랜치, 테스트 명령, 린트 명령은 프로젝트에서 자동 감지 (Enter로 넘어가면 됨)
+`/sentry-setup`이 하는 일:
+1. **Sentry 연결 확인** — OAuth 브라우저 인증 (자동)
+2. **필수 설정 2개** — Sentry 조직 slug + 프로젝트 slug
+3. **나머지 자동 감지** — 브랜치, 테스트/린트 명령은 프로젝트에서 감지 (Enter로 넘기면 됨)
 
-설정이 끝나면 바로 스캔 결과가 나옵니다.
+설정이 끝나면 바로 사용 가능합니다.
 
 ### 특정 이슈 수정
 
