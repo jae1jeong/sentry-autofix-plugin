@@ -26,8 +26,6 @@ The pipeline has 12 steps. Each step has a hard gate — if a gate fails, the pi
 
 `.sentry-autofix/state.json`을 읽는다. 파일이 없으면 `/sentry-scan`의 초기화 로직과 동일하게 인터랙티브 초기 설정을 진행한다 (프로젝트 유형 자동 감지 + sentryOrg/sentryProject/baseBranch 등을 사용자에게 확인).
 
-**자동 정리:** `processed`에서 `pr_created`, `skipped`, `failed` 상태이고 `processedAt`이 30일 이상 경과한 항목을 삭제한다. `.sentry-autofix/logs/`에서 30일 지난 로그 파일도 삭제한다. `analyzing` 상태는 삭제하지 않는다 (stale lock 로직에서 처리).
-
 ### Step 2: Issue Selection
 
 **$ARGUMENTS에 이슈 ID가 있는 경우:**
