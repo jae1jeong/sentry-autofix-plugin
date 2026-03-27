@@ -465,6 +465,10 @@ sentry-autofix/
 └── README.md
 ```
 
+## 크레딧
+
+- TDD 및 검증 스킬(`sentry-tdd`, `sentry-verify`)은 [superpowers](https://github.com/obra/superpowers) 플러그인의 `test-driven-development`, `verification-before-completion` 스킬을 참고하여 Sentry 버그 수정에 맞게 경량화한 버전입니다.
+
 ## 라이선스
 
 MIT
