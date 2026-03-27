@@ -357,6 +357,18 @@ sentry-autofix/
 └── README.ko.md
 ```
 
+## Known Limitations
+
+- **One issue per run.** `/sentry-fix` processes a single issue per execution. Use `/loop` or `/schedule` to process more over time. Batch mode is not supported to avoid code conflicts between fixes.
+- **State file grows over time.** `.sentry-autofix/state.json` accumulates entries for every processed issue. After hundreds of PRs, the file becomes large and hard to read manually. There is no built-in cleanup yet — you can delete old entries from `processed` manually.
+- **Not all bugs are fixable.** Infrastructure issues, external API failures, data integrity problems, and flaky tests are automatically skipped. The plugin targets application-level bugs with clear stacktraces.
+- **Reproduction test quality varies.** The AI writes reproduction tests based on stacktrace analysis. Complex bugs involving race conditions, specific data states, or multi-step user flows may not be accurately reproduced.
+- **`/loop` is session-scoped.** It stops when you close the session and expires after 3 days. For persistent automation, use `/schedule` (Desktop) or Cloud scheduling.
+- **Single repo only.** Cross-repo dependency fixes are not supported.
+- **LLM token costs.** Each `/sentry-fix` run uses tokens for analysis (subagent), code reading, test writing, and fixing. Frequent runs on large codebases will consume more tokens.
+
+---
+
 ## Credits
 
 TDD and verification skills (`sentry-tdd`, `sentry-verify`) are lightweight adaptations of `test-driven-development` and `verification-before-completion` from the [superpowers](https://github.com/obra/superpowers) plugin, tailored for Sentry bug fixing.
