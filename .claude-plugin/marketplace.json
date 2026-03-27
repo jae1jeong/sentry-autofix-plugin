@@ -1,16 +1,16 @@
 {
   "name": "sentry-autofix",
   "owner": {
-    "name": "jaewon"
+    "name": "jae1jeong"
   },
   "metadata": {
-    "description": "Sentry 오류를 TDD 방식으로 자동 수정하고 Draft PR을 생성하는 Claude Code 플러그인"
+    "description": "Auto-fix Sentry errors with TDD and create Draft PRs via Claude Code"
   },
   "plugins": [
     {
       "name": "sentry-autofix",
-      "source": "./",
-      "description": "Sentry 오류를 TDD 방식으로 자동 수정하고 Draft PR을 생성하는 Claude Code 플러그인",
+      "source": "./plugins/sentry-autofix",
+      "description": "Auto-fix Sentry errors with TDD and create Draft PRs via Claude Code",
       "version": "0.1.0"
     }
   ]

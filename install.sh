@@ -40,10 +40,9 @@ if [ -d "$PLUGIN_DIR" ]; then
 fi
 
 mkdir -p "$PLUGIN_DIR"
-cp -r "$SCRIPT_DIR/.claude-plugin" "$PLUGIN_DIR/"
-cp -r "$SCRIPT_DIR/skills" "$PLUGIN_DIR/"
-cp "$SCRIPT_DIR/.mcp.json" "$PLUGIN_DIR/"
-[ -f "$SCRIPT_DIR/README.md" ] && cp "$SCRIPT_DIR/README.md" "$PLUGIN_DIR/"
+cp -r "$SCRIPT_DIR/plugins/sentry-autofix/.claude-plugin" "$PLUGIN_DIR/"
+cp -r "$SCRIPT_DIR/plugins/sentry-autofix/skills" "$PLUGIN_DIR/"
+cp "$SCRIPT_DIR/plugins/sentry-autofix/.mcp.json" "$PLUGIN_DIR/"
 
 echo "Installed to $PLUGIN_DIR"
 
