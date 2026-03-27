@@ -1,9 +1,9 @@
 # sentry-autofix
 
-**컴퓨터만 켜두면, 주말에도 Sentry 오류를 찾아서 고치고 PR을 올려놓는 Claude Code 플러그인.**
+**Claude Code 세션만 열어두면, 주말에도 Sentry 오류를 찾아서 고치고 PR을 올려놓는 플러그인.**
 
 ```
-금요일 퇴근 → /loop 12h /sentry-fix 설정 → 주말 동안 자동 실행
+금요일 퇴근 → Claude Code 세션에서 /loop 12h /sentry-fix → 노트북 열어둠
 월요일 출근 → GitHub에 Draft PR이 올라와 있음 → 리뷰만 하면 끝
 ```
 
@@ -143,7 +143,7 @@ claude
 6. `auto/sentry-fix/SENTRY-12345` 브랜치 생성
 7. Draft PR 생성 → `main` 브랜치로 복귀
 
-### 자동 모드 — 컴퓨터만 켜두면 알아서 합니다
+### 자동 모드 — 세션만 열어두면 알아서 합니다
 
 ```
 /loop 12h /sentry-fix           # 하루 2회 자동 실행
@@ -155,7 +155,10 @@ claude
 - 통과하면 Draft PR을 올려놓습니다
 - 실패하면 기록만 남기고 다음 이슈로 넘어갑니다
 
-**금요일 퇴근 전에 설정해두면, 월요일에 PR이 올라와 있습니다.**
+> **주의:** `/loop`는 세션이 열려있을 때만 동작합니다. 세션을 닫거나 Claude Code를 재시작하면 사라집니다. 3일 후 자동 만료됩니다.
+> 세션 없이도 동작하려면 Desktop 스케줄(`/schedule`) 또는 Cloud 스케줄을 사용하세요.
+
+**금요일 퇴근 전에 설정하고 노트북을 열어두면, 월요일에 PR이 올라와 있습니다.**
 
 ---
 
@@ -248,18 +251,45 @@ main (config.baseBranch)
 
 스킬 내부에서 실행 주기를 강제하지 않습니다. `/loop` 또는 `/schedule`로 직접 설정합니다.
 
+### `/loop` vs `/schedule` 차이
+
+**`/loop`** — 현재 세션 안에서 도는 타이머. 브라우저 탭 하나 열어둔 것과 비슷.
+- 세션 닫으면 사라짐, 3일 후 자동 만료
+- 빠르게 테스트할 때 적합
+
+**`/schedule` (Desktop)** — 컴퓨터에 설치되는 백그라운드 작업. macOS launchd / cron과 비슷.
+- Claude Code를 안 열어도 컴퓨터만 켜져있으면 실행
+- 재시작해도 유지됨
+
+**Cloud 스케줄** — Anthropic 서버에서 실행. GitHub Actions와 비슷.
+- 컴퓨터가 꺼져있어도 동작
+- 로컬 파일 접근 불가 (매번 fresh clone)
+
+| 방식 | 명령어 | 컴퓨터 필요 | 세션 필요 | 재시작 후 유지 |
+|------|--------|-----------|---------|------------|
+| `/loop` | `/loop 12h /sentry-fix` | O | O | X (3일 만료) |
+| Desktop 스케줄 | `/schedule` | O | X | O |
+| Cloud 스케줄 | claude.ai에서 설정 | X | X | O |
+
 ```
-/loop 12h /sentry-fix                   # 하루 2회 (로컬, 세션 유지 필요)
+# /loop (세션 열려있을 때)
+/loop 12h /sentry-fix                   # 하루 2회
 /loop 8h /sentry-fix                    # 하루 3회
-/loop 24h /sentry-fix                   # 하루 1회
-/schedule daily 09:00 /sentry-fix       # 매일 오전 9시 (원격, 컴퓨터 꺼져도 동작)
-/schedule "0 9,21 * * *" /sentry-fix    # 매일 오전 9시 + 오후 9시
+
+# Desktop 스케줄 (세션 없이, 컴퓨터만 켜져있으면)
+/schedule daily 09:00 /sentry-fix       # 매일 오전 9시
+/schedule "0 9,21 * * *" /sentry-fix    # 하루 2회 (오전 9시 + 오후 9시)
 ```
 
-**취소:**
+**취소/관리:**
 ```
+# loop
 /loop                           # 현재 등록된 loop 목록 확인
 /loop stop <id>                 # 특정 loop 취소
+
+# Desktop 스케줄
+/schedule                       # 등록된 스케줄 목록
+/schedule stop <id>             # 특정 스케줄 취소
 ```
 
 `config.scanInterval`은 연속 실행 방지 가드입니다. 설정 간격보다 짧게 연속 실행되면 자동 스킵합니다.
