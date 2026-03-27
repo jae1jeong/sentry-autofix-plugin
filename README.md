@@ -122,7 +122,7 @@ claude
 ```
 
 `/sentry-setup`이 하는 일:
-1. **Sentry 연결 확인** — OAuth 브라우저 인증 (자동)
+1. **Sentry 연결 확인** — 안 되어 있으면 MCP 등록 + `/mcp`에서 Authenticate 안내
 2. **필수 설정 2개** — Sentry 조직 slug + 프로젝트 slug
 3. **나머지 자동 감지** — 브랜치, 테스트/린트 명령은 프로젝트에서 감지 (Enter로 넘기면 됨)
 
@@ -377,13 +377,14 @@ fix: handle null user in checkout flow [SENTRY-123]
 ### Sentry MCP 연결 안 됨
 
 ```bash
-# MCP 서버 등록 확인
-claude mcp list | grep sentry
-
-# 등록 안 되어 있으면 수동 등록
+# 1. MCP 서버 등록
 claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
 
-# Claude Code 재시작 후 첫 Sentry 도구 호출 시 OAuth 브라우저 인증 진행
+# 2. Claude Code 재시작
+
+# 3. Claude Code 안에서:
+/mcp → sentry 선택 → Authenticate 클릭
+# 브라우저에서 Sentry OAuth 인증 진행
 ```
 
 ### 스킬이 안 보임
